@@ -1,6 +1,17 @@
 # Desafío de Habilidades para el Rol de Dev Jr en Sherpa.wtf
 ### Título de la Prueba Técnica: "El Asistente de Viajes"
 
+## Stack Tecnologico utilizado en la empresa
+
+- TypeScript
+- Node.js
+- Express.js
+
+Librerías usadas:
+- LangGraph
+- LangChain
+- BuilderBot
+
 ## Contexto
 Un cliente (Juan)  desea lanzar un asistente digital básico para planificar viajes. El cliente quiere comenzar con una versión sencilla pero funcional que pueda ser escalada en el futuro. Tu misión es crear un prototipo de este asistente utilizando las tecnologías y librerías clave de Sherpa.
 El desafío está diseñado para que puedas resolverlo con habilidades básicas, pero incluye espacio para que amplíes y explores soluciones más avanzadas si lo deseas. ¡Sorprender con soluciones creativas y funcionalidades adicionales siempre será bienvenido!
