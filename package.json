@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "prestart": "npx tsx addEnv.ts",
     "start": "npx tsx --env-file=.env --watch  src/app.ts"
   },
   "keywords": [],
