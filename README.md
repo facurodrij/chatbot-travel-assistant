@@ -42,6 +42,8 @@ curl -X POST http://localhost:3000/api/chat -H "Content-Type: application/json" 
 
 ### Ejecutar Pruebas (Opcional)
 Para obtener más información del modelo y obtener las respuestas completas del bot, puedes ejecutar las pruebas creadas con el siguiente comando:
+
+**Apagar el servidor antes de ejecutar las pruebas**
 ```bash
 npm test
 ```
