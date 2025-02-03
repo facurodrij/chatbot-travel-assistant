@@ -3,6 +3,16 @@ import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { SystemMessage } from "@langchain/core/messages";
 import { openweathermap } from "../tools/openWeatherMap";
 
+// --------------------------------------------------
+// Agente de Equipaje y Clima
+// --------------------------------------------------
+/**
+ * Experto en preparación de equipaje:
+ * - Sugiere artículos basados en destino y duración
+ * - Consulta clima usando OpenWeatherMap
+ * - Valida fechas de viaje
+ * - Proporciona recomendaciones específicas
+ */
 const llm = new ChatOpenAI({
     model: "gpt-4o-mini",
     temperature: 0,
@@ -10,8 +20,6 @@ const llm = new ChatOpenAI({
 });
 
 export const packing_agent = createReactAgent({
-    // Especialista en equipaje y clima.
-    // Sugerencias para empacar: Según el destino y la duración del viaje, el bot debe generar una lista básica de cosas para llevar. Consulta de clima: Obtener información del clima utilizando una API pública gratuita (por ejemplo, OpenWeatherMap) para el destino y la fecha proporcionados.
     llm,
     tools: [openweathermap],
     stateModifier: new SystemMessage(

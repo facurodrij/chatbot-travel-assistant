@@ -1,11 +1,15 @@
 import { z } from "zod";
 import { tool } from "@langchain/core/tools";
 
+/**
+ * Herramienta de clima usando OpenWeatherMap:
+ * - Obtiene pronóstico de 5 días
+ * - Valida coordenadas con Zod
+ * - Maneja errores de API
+ */
 export const openweathermap = tool(
     async (input): Promise<string> => {
         try {
-            // Se obtiene la información del clima de los próximos 5 días.
-            // https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
             const lat = input.lat;
             const lon = input.lon;
             const response = await fetch(

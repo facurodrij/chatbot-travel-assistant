@@ -3,6 +3,16 @@ import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { SystemMessage } from "@langchain/core/messages";
 import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
 
+// --------------------------------------------------
+// Agente de Destinos
+// --------------------------------------------------
+/**
+ * Experto en recomendaciones de destinos turísticos:
+ * - Valida información de destino
+ * - Busca información con Tavily
+ * - Sugiere lugares y actividades
+ * - Considera presupuesto si está disponible
+ */
 const llm = new ChatOpenAI({
     model: "gpt-4o-mini",
     temperature: 0,
@@ -12,8 +22,6 @@ const llm = new ChatOpenAI({
 const tavilyTool = new TavilySearchResults({ maxResults: 3 });
 
 export const destination_agent = createReactAgent({
-    // Experto en destinos (sugerencias, lugares populares, etc.)
-    // Búsqueda de destinos: Permite al usuario explorar destinos con detalles básicos (nombre, ubicación, y una descripción breve).
     llm,
     tools: [tavilyTool],
     stateModifier: new SystemMessage(

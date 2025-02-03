@@ -3,6 +3,7 @@ import { HumanMessage } from "@langchain/core/messages";
 import { AgentState } from "../graph.js";
 import { destination_agent } from "../agents/destinationAgent";
 
+// Nodo de procesamiento para el agente de destinos
 export const destinationNode = async (
     state: typeof AgentState.State,
     config?: RunnableConfig,

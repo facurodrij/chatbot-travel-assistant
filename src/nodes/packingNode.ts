@@ -3,6 +3,7 @@ import { HumanMessage } from "@langchain/core/messages";
 import { AgentState } from "../graph.js";
 import { packing_agent } from "../agents/packingAgent";
 
+// Nodo de procesamiento para el agente de equipaje y clima
 export const packingNode = async (
     state: typeof AgentState.State,
     config?: RunnableConfig,
