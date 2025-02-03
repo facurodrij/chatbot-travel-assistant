@@ -9,7 +9,7 @@
 ### Instalación
 1. Clona el repositorio
 ```bash
-git clone 
+git clone https://github.com/facurodrij/chatbot-travel.git
 ```
 2. Instala las dependencias
 ```bash
