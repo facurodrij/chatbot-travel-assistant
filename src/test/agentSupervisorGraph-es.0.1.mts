@@ -130,7 +130,7 @@ const weatherTool = tool(
             const lat = input.lat;
             const lon = input.lon;
             const response = await fetch(
-                `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=f5379841795f6022cd4920b81d70e8d3&units=metric`
+                `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${process.env.OPENWEATHERMAP_API_KEY}&units=metric`
             );
             const data = await response.json();
             const data_to_string = JSON.stringify(data);
