@@ -1,10 +1,3 @@
-// process.env.OPENAI_API_KEY = "sk_...";
-// process.env.TAVILY_API_KEY = "sk_...";
-// Optional tracing in LangSmith
-// process.env.LANGCHAIN_API_KEY = "sk_...";
-// process.env.LANGCHAIN_TRACING_V2 = "true";
-// process.env.LANGCHAIN_PROJECT = "Agent Supervisor: LangGraphJS";
-
 import "dotenv/config";
 
 import { END, Annotation } from "@langchain/langgraph";
@@ -27,7 +20,7 @@ const AgentState = Annotation.Root({
 import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
 import { z } from "zod";
 
-const tavilyTool = new TavilySearchResults();
+const tavilyTool = new TavilySearchResults({ maxResults: 3 });
 
 // Create Agent Supervisor
 
@@ -38,17 +31,17 @@ import { ChatPromptTemplate, MessagesPlaceholder } from "@langchain/core/prompts
 const members = ["destination", "packing"] as const;
 
 const systemPrompt =
-    "You are a supervisor tasked with managing a conversation between the" +
-    " following workers: {members}. Given the following user request," +
-    " respond with the worker to act next. Each worker will perform a" +
-    " task and respond with their results and status. When finished," +
-    " respond with FINISH.";
+    "Tu eres un supervisor encargado de gestionar una conversación entre los" +
+    " siguientes agentes: {members}. Dada la solicitud del usuario," +
+    " responde con el agente que debe actuar a continuación." +
+    " Cada agente realizará una tarea y responderá con sus resultados y estado." +
+    " Cuando terminen, responde con FINISH.";
 const options = [END, ...members];
 
 // Define the routing function
 const routingTool = {
     name: "route",
-    description: "Select the next role.",
+    description: "Selecciona el siguiente rol.",
     schema: z.object({
         next: z.enum([END, ...members]),
     }),
@@ -59,8 +52,8 @@ const prompt = ChatPromptTemplate.fromMessages([
     new MessagesPlaceholder("messages"),
     [
         "human",
-        "Given the conversation above, who should act next?" +
-        " Or should we FINISH? Select one of: {options}",
+        "Dada la conversación anterior, ¿quién debería actuar a continuación?" +
+        " ¿O deberíamos TERMINAR? Selecciona uno de: {options}"
     ],
 ]);
 
@@ -95,7 +88,14 @@ const destination_agent = createReactAgent({
     // Búsqueda de destinos: Permite al usuario explorar destinos con detalles básicos (nombre, ubicación, y una descripción breve).
     llm,
     tools: [tavilyTool],
-    stateModifier: new SystemMessage("You are a destination expert. You can use the Tavily search engine to find information about destinations.")
+    stateModifier: new SystemMessage(
+        "Eres un experto en destinos de viajes." +
+        "Revisa que la información ingresada por el usuario incluya un destino válido (ciudad, país, etc.)." +
+        "Puedes usar el motor de búsqueda de Tavily para encontrar información sobre destinos." +
+        "Proporciona sugerencias y lugares populares para visitar en el destino." +
+        "Si es necesario, puedes solicitar información adicional al usuario." +
+        "(Opcional) Si el usuario brinda un presupuesto, sugiere actividades y lugares que se ajusten a él."
+    ),
 })
 
 const destinationNode = async (
@@ -111,12 +111,60 @@ const destinationNode = async (
     };
 };
 
+import { tool } from "@langchain/core/tools";
+
+
+//const simpleToolSchema: StructuredToolParams = {
+//  name: "get_current_weather",
+//  description: "
+//  schema: z.object({
+//    city: z.string().describe("The city to get the weather for"),
+//    state: z.string().optional().describe("The state to get the weather for"),
+//  }),
+//};
+
+const weatherTool = tool(
+    async (input): Promise<string> => {
+        try {
+            // Se obtiene la información del clima de los próximos 5 días.
+            // https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
+            const lat = input.lat;
+            const lon = input.lon;
+            const response = await fetch(
+                `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=f5379841795f6022cd4920b81d70e8d3&units=metric`
+            );
+            const data = await response.json();
+            const data_to_string = JSON.stringify(data);
+            return data_to_string;
+        } catch (error) {
+            console.log(error);
+            return "Ocurrió un error al obtener la información del clima.";
+        }
+    },
+    {
+        name: "openweathermap",
+        description: "Obtener información del clima de los próximos 5 días utilizando OpenWeatherMap.",
+        schema: z.object({
+            lat: z.number().describe("La latitud para obtener el clima"),
+            lon: z.number().describe("La longitud para obtener el clima")
+        }),
+    }
+);
+
 const packing_agent = createReactAgent({
     // Especialista en equipaje y clima.
     // Sugerencias para empacar: Según el destino y la duración del viaje, el bot debe generar una lista básica de cosas para llevar. Consulta de clima: Obtener información del clima utilizando una API pública gratuita (por ejemplo, OpenWeatherMap) para el destino y la fecha proporcionados.
     llm,
-    tools: [],
-    stateModifier: new SystemMessage("You are a packing expert. You can use the Tavily search engine to find information about packing. You can also use the OpenWeatherMap API to find information about the weather at a destination.")
+    tools: [weatherTool],
+    stateModifier: new SystemMessage(
+        "Eres un experto en equipaje y clima." +
+        "Proporciona sugerencias para empacar según el destino y la duración del viaje." +
+        "Revisa que la información ingresada por el usuario incluya una fecha válida." +
+        "Si la fecha actual y la fecha ingresada superan los 5 días, describe el clima general en la fecha ingresada." +
+        "Puedes usar la API de OpenWeatherMap para obtener información sobre el clima de los próximos 5 días." +
+        "Si es necesario, puedes solicitar información adicional al usuario.",
+    ),
+    //"You can use the Tavily search engine to find information about packing." +
 })
 
 const packingNode = async (
@@ -139,8 +187,6 @@ import { START, StateGraph } from "@langchain/langgraph";
 // 1. Create the graph
 const workflow = new StateGraph(AgentState)
     // 2. Add the nodes; these will do the work
-    //.addNode("researcher", researcherNode)
-    //.addNode("chart_generator", chartGenNode)
     .addNode("destination", destinationNode)
     .addNode("packing", packingNode)
     .addNode("supervisor", async (state: typeof AgentState.State, config?: RunnableConfig) => {
@@ -195,11 +241,49 @@ let streamResults = graph.stream(
     {
         messages: [
             new HumanMessage({
-                content: "I want to go to Paris, France on February 14th, 2025. What places should I visit? What should I pack?",
+                content: "Quiero ir a París, Francia. ¿Qué lugares debería visitar?",
+                //content: "I want to go to Paris, France on February 14th, 2025. What places should I visit? What should I pack?",
             }),
         ],
     },
-    { recursionLimit: 50, configurable: { thread_id: "42" } },
+    { recursionLimit: 50, configurable: { thread_id: "1" } },
+);
+
+for await (const output of await streamResults) {
+    if (!output?.__end__) {
+        console.log(output);
+        console.log("----");
+    }
+}
+
+streamResults = graph.stream(
+    {
+        messages: [
+            new HumanMessage({
+                content: "Quiero ir el 3 de febrero de 2025. ¿Cómo estará el clima y qué debo empacar?",
+                //content: "¿Cómo está el clima allí?",
+            }),
+        ],
+    },
+    { recursionLimit: 50, configurable: { thread_id: "1" } },
+);
+
+for await (const output of await streamResults) {
+    if (!output?.__end__) {
+        console.log(output);
+        console.log("----");
+    }
+}
+
+streamResults = graph.stream(
+    {
+        messages: [
+            new HumanMessage({
+                content: "Mi presupuesto es de USD$3000 y quiero quedarme 7 días",
+            }),
+        ],
+    },
+    { recursionLimit: 50, configurable: { thread_id: "1" } },
 );
 
 for await (const output of await streamResults) {
