@@ -1,91 +1,83 @@
-# Desafío de Habilidades para el Rol de Dev Jr en Sherpa.wtf
-### Título de la Prueba Técnica: "El Asistente de Viajes"
+# Título de la Prueba Técnica: "El Asistente de Viajes"
+## Instalación
+### Requisitos
+- Node.js v20.18.1 o superior
+- npm v10.8.2 o superior
+- API Key de OpenAI, TavilyAI y OpenWeatherMap
+- curl o Postman para realizar solicitudes HTTP
 
-## Stack Tecnologico utilizado en la empresa
+### Instalación
+1. Clona el repositorio
+```bash
+git clone 
+```
+2. Instala las dependencias
+```bash
+npm install
+```
+3. Inicia el servidor
+```bash
+npm start
+```
+4. Ingresa las API Keys solicitadas por consola como el siguiente ejemplo:
+```bash
+Please enter your OpenAI API Key:sk-proj-uWHqZ...
+```
+5. El servidor estará disponible en `http://localhost:3000`
 
-- TypeScript
-- Node.js
-- Express.js
+## Ejemplo de Uso
+1. Para probar el bot, puedes utilizar `curl` para enviar solicitudes POST a la ruta `/api/chat` con el siguiente formato:
 
-Librerías usadas:
-- LangGraph
-- LangChain
-- BuilderBot
+```bash
+curl -X POST http://localhost:3000/api/chat -H "Content-Type: application/json" -d '{"message": "Hola, quiero ir de vacaciones a Florianopolis, Brasil. ¿Qué lugares debería visitar?"}'
+```
+2. En la terminal, recibirás la respuesta del bot.
+3. Para continuar la conversación siguiendo el hilo, te doy los siguientes ejemplos:
+```bash
+curl -X POST http://localhost:3000/api/chat -H "Content-Type: application/json" -d '{"message": "Quiero ir el 8 de febrero de 2025. ¿Cómo estará el clima y qué debo empacar?"}'
+```
+```bash
+curl -X POST http://localhost:3000/api/chat -H "Content-Type: application/json" -d '{"message": "Mi presupuesto es de R$2000 y quiero quedarme 7 días"}'
+```
 
-## Contexto
-Un cliente (Juan)  desea lanzar un asistente digital básico para planificar viajes. El cliente quiere comenzar con una versión sencilla pero funcional que pueda ser escalada en el futuro. Tu misión es crear un prototipo de este asistente utilizando las tecnologías y librerías clave de Sherpa.
-El desafío está diseñado para que puedas resolverlo con habilidades básicas, pero incluye espacio para que amplíes y explores soluciones más avanzadas si lo deseas. ¡Sorprender con soluciones creativas y funcionalidades adicionales siempre será bienvenido!
+### Ejecutar Pruebas (Opcional)
+Para obtener más información del modelo y obtener las respuestas completas del bot, puedes ejecutar las pruebas creadas con el siguiente comando:
+```bash
+npm test
+```
 
 
-## Objetivo
-Crear un bot que asista a los usuarios en la planificación de un viaje, proporcionando información básica y funcionalidades mínimas, con el potencial de escalar a una herramienta más completa.
+## Decisiones técnicas y Desafíos encontrados
+### Decisiones
+- Se utilizo TypeScript para todo el desarrollo.
+- Se utilizo el framework Express.js para la creación del servidor HTTP.
+- Se utilizo LangGraph para la lógica de agentes y flujos conversacionales.
+- Se creo una estructura multi-agente con dos agentes: `DestinationAgent` y `PackingAgent`.
+- Se opto por utilizar la estructura `Multi-agent supervisor`, donde un agente supervisor es el encargado de gestionar la conversación y seleccionar el agente adecuado para responder, mas info en [LangGraph Multi-agent supervisor](https://langchain-ai.github.io/langgraph/tutorials/multi_agent/agent_supervisor/).
+- Se utilizan las APIs de `OpenAI`, `TavilyAI` y `OpenWeatherMap`:
+  - OpenAI: Para la generación de respuestas de texto.
+  - Tavily: Para la busqueda en internet y generación de respuestas.
+  - OpenWeatherMap: Para la consulta del clima en el destino proporcionado.
 
-## Requerimientos Obligatorios
-1. Flujo Multi-Agente:
-- Implementa al menos 2 agentes que trabajen en conjunto.
-  - Agente 1: Experto en destinos (sugerencias, lugares populares, etc.).
-  - Agente 2: Especialista en equipaje y clima.
-2. Funcionalidades del Bot:
-- Búsqueda de destinos: Permite al usuario explorar destinos con detalles básicos (nombre, ubicación, y una descripción breve).
-- Sugerencias para empacar: Según el destino y la duración del viaje, el bot debe generar una lista básica de cosas para llevar.
-- Consulta de clima: Obtener información del clima utilizando una API pública gratuita (por ejemplo, OpenWeatherMap) para el destino y la fecha proporcionados.
-3. Manejo de Conversaciones:
-- El bot debe ser capaz de gestionar hilos de conversación, permitiendo al usuario:
-  - Cambiar de tema (por ejemplo, de destinos a clima) sin perder el contexto.
-  - Retomar un hilo anterior.
-4. Tecnologías y Librerías:
-- TypeScript: Para todo el desarrollo.
-- LangGraph: Para la lógica de agentes y flujos conversacionales.
-5. Exposición Local:
-- Crea una ruta HTTP en Express.js donde se pueda probar el bot localmente.
-- Ejemplo: Un endpoint /api/chat que acepte un input JSON simulando una conversación y devuelva una respuesta.
+### Desafíos
+- Es mi primera vez utilizando las librerías LangChain y LangGraph, por lo que tuve que aprender a utilizarlas leyendo su documentación y entender su funcionamiento mediante ejemplos.
+- La creación de agentes y la estructura de flujos conversacionales fue un desafío, ya que tuve que pensar en cómo organizar la lógica de los agentes y cómo gestionar la conversación entre ellos.
+- La creación de la herramienta que integra la API de OpenWeatherMap fue un desafío importante, ya que en la versión gratuita no se puede consultar el clima de una fecha específica, solamente devuelve el clima actual o hasta un máximo de 5 días en el futuro. Por lo que tuve que adaptar al agente con esta limitación.
+- Entender los conceptos de la librería LangGraph como Memorias, Tools, Graphs, ChatPromptTemplates, entre otros, fue un desafío, ya que es una librería muy completa y con muchas funcionalidades. Soy consciente de que aún me falta mucho por aprender y explorar de esta librería.
+- Me pareción interesante que en algunos puntos he notado que la documentación de LangGraph en Python se encuentran mejores explicaciones que en la documentación de JavaScript. O probablemente sea que me siento más cómodo con Python.
 
-## Nice to Have (Opcional)
-Si quieres llevar el desafío un paso más allá, puedes implementar alguna de las siguientes mejoras:
-1. Integración con APIs de Vuelos o Alojamiento:
-- Busca vuelos u hoteles en el destino usando una API externa (como Skyscanner, Amadeus o Booking).
-2. Personalización del Presupuesto:
-- Permite al usuario ingresar un presupuesto y sugiere actividades o lugares dentro de ese rango.
-3. Planificación Avanzada:
-- Crea un itinerario diario básico para el usuario, considerando el destino y la duración del viaje.
-4. Documentación y Buenas Prácticas:
-- Genera una breve guía en el README.md explicando cómo correr, probar, y ampliar la funcionalidad del bot.
+### Mejoras Implementadas
+1. Personalización del Presupuesto:
+    - Permite al usuario ingresar un presupuesto y sugiere actividades o lugares dentro de ese rango.
 
-## Criterios de Evaluación
-1. Capacidad de Resolución:
-- Implementación de las funcionalidades mínimas requeridas.
-- Eficiencia en el uso de TypeScript y LangGraph.
-2. Estructura del Proyecto:
-- Código modular y bien organizado.
-- Buenas prácticas de programación (nombres descriptivos, comentarios, etc.).
-3. Creatividad y Expansión:
-- Funcionalidades opcionales implementadas.
-- Propuestas o ideas adicionales para escalar la solución.
-4. Documentación:
-- Explicación clara del proyecto y cómo ejecutarlo.
-- Detalles sobre decisiones técnicas o desafíos encontrados.
 
-## Instrucciones de Entrega
-1. Setup Inicial:
-- Crea un repositorio en GitHub o entrega el proyecto comprimido con instrucciones claras.
-2. Entrega Básica:
-- Asegúrate de que el bot cumpla con los requerimientos obligatorios.
-- Expón el endpoint /api/chat y proporciona ejemplos de inputs y outputs.
-3. Extras Opcionales:
-- Si implementaste funcionalidades adicionales, explica cómo probarlas y por qué las consideraste valiosas.
-4. Deadline:
-- Completa el desafío en un plazo de 7 días desde su recepción.
+## Propuestas o ideas adicionales
+- Implementación de un agente con integración a la API de Google Calendar para la planificación de itinerarios.
+- Implementación de un agente con capacidad de recomendaciones de seguridad y salud en el destino, como lugares inseguros, medios de transporte recomendados, precauciones con la comida y bebida, entre otros.
+- Implementación de un agente con integración a la API de Google Maps para la generación de ruta recomendada y estimación de tiempo de viaje.
 
-## Relato de la Prueba
-Imagina que un cliente se acerca a Sherpa con una necesidad urgente:
 
-"Quiero un asistente de viajes sencillo, algo funcional que pueda ayudar a las personas a planificar viajes sin complicaciones. Necesito que sea ágil, fácil de usar y que pueda crecer con el tiempo. ¡Confío en Sherpa para resolverlo!"
+## Valoración personal del desafío
+Me gustaría agradecer a la empresa por la oportunidad de participar en este desafío técnico. Ha sido una experiencia muy enriquecedora y desafiante, ya que me ha permitido aprender nuevas tecnologías y conceptos, y me ha motivado a seguir explorando y mejorando mis habilidades en el desarrollo de chatbots y agentes conversacionales dado que es un campo absultamente nuevo para mi. A pesar de los desafíos encontrados, me siento satisfecho con el resultado obtenido y con las mejoras implementadas. Estoy seguro de que este desafío me ha ayudado a crecer como desarrollador y a adquirir nuevas habilidades que me serán útiles en futuros proyectos. Estaría enormemente agradecido por su feedback y comentarios sobre mi solución.
 
-Tu misión es crear esta herramienta base, asegurándote de que sea funcional, escalable, y sorprenda al cliente con su potencial.
-
-## Siguiente Paso:
-Una vez superado el desafío de habilidades, se coordinará una entrevista final para conocernos en persona y discutir tu experiencia en el proceso.
-
-¡Buena suerte y esperamos ver cómo destacas en este desafío! 🚀
-
-Contacto CTO: agus@sherpa.wtf enviar prueba técnica
+Saludos cordiales, Facundo Joel Rodriguez
