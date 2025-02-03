@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 import { HumanMessage } from '@langchain/core/messages';
-import { graph } from '../graph.js';
+import { graph } from '../graph';
 
 // Definir las interfaces de la salida de la función stream
 interface Message {
