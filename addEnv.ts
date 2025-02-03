@@ -13,7 +13,7 @@ if (!existsSync(envFilePath)) {
     rl.question('Please enter your OPENAI_API_KEY: ', (openaiApiKey) => {
         rl.question('Please enter your TAVILY_API_KEY: ', (tavilyApiKey) => {
             rl.question('Please enter your OPENWEATHERMAP_API_KEY: ', (openWeatherMapApiKey) => {
-                const envContent = `OPENAI_API_KEY=${openaiApiKey}\nTAVILY_API_KEY=${tavilyApiKey}\OPENWEATHERMAP_API_KEY=${openWeatherMapApiKey}`;
+                const envContent = `OPENAI_API_KEY=${openaiApiKey}\nTAVILY_API_KEY=${tavilyApiKey}\nOPENWEATHERMAP_API_KEY=${openWeatherMapApiKey}`;
                 writeFileSync(envFilePath, envContent);
                 console.log('.env file created.');
                 rl.close();
