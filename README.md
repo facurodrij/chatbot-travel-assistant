@@ -1,4 +1,35 @@
 # Título de la Prueba Técnica: "El Asistente de Viajes"
+
+Prueba técnica para [Sherpa.wtf](https://www.sherpa.wtf/) sobre un bot asistente de viajes que ayude al usuario con la planificación de un viaje. El bot debe ser capaz de sugerir lugares turíticos según el destino especificado, generar una lista básica de cosas para llevar según el destino y duración del viaje, entre otros requisitos detallados a continuación. 
+
+## Índice
+- [Requerimientos Obligatorios](#requerimientos-obligatorios)
+- [Instalación](#instalación)
+- [Ejemplo de Uso](#ejemplo-de-uso)
+- [Decisiones técnicas y Desafíos encontrados](#decisiones-técnicas-y-desafíos-encontrados)
+- [Propuestas o ideas adicionales](#propuestas-o-ideas-adicionales)
+- [Valoración personal del desafío](#valoración-personal-del-desafío)
+
+## Requerimientos Obligatorios
+1. Flujo Multi-Agente:
+- Implementa al menos 2 agentes que trabajen en conjunto.
+  - Agente 1: Experto en destinos (sugerencias, lugares populares, etc.).
+  - Agente 2: Especialista en equipaje y clima.
+2. Funcionalidades del Bot:
+- Búsqueda de destinos: Permite al usuario explorar destinos con detalles básicos (nombre, ubicación, y una descripción breve).
+- Sugerencias para empacar: Según el destino y la duración del viaje, el bot debe generar una lista básica de cosas para llevar.
+- Consulta de clima: Obtener información del clima utilizando una API pública gratuita (por ejemplo, OpenWeatherMap) para el destino y la fecha proporcionados.
+3. Manejo de Conversaciones:
+- El bot debe ser capaz de gestionar hilos de conversación, permitiendo al usuario:
+  - Cambiar de tema (por ejemplo, de destinos a clima) sin perder el contexto.
+  - Retomar un hilo anterior.
+4. Tecnologías y Librerías:
+- TypeScript: Para todo el desarrollo.
+- LangGraph: Para la lógica de agentes y flujos conversacionales.
+5. Exposición Local:
+- Crea una ruta HTTP en Express.js donde se pueda probar el bot localmente.
+- Ejemplo: Un endpoint /api/chat que acepte un input JSON simulando una conversación y devuelva una respuesta.
+
 ## Instalación
 ### Requisitos
 - Node.js v20.18.1 o superior
@@ -48,7 +79,6 @@ Para obtener más información del modelo y obtener las respuestas completas del
 npm test
 ```
 
-
 ## Decisiones técnicas y Desafíos encontrados
 ### Decisiones
 - Se utilizo TypeScript para todo el desarrollo.
@@ -81,5 +111,3 @@ npm test
 
 ## Valoración personal del desafío
 Me gustaría agradecer a la empresa por la oportunidad de participar en este desafío técnico. Ha sido una experiencia muy enriquecedora y desafiante, ya que me ha permitido aprender nuevas tecnologías y conceptos, y me ha motivado a seguir explorando y mejorando mis habilidades en el desarrollo de chatbots y agentes conversacionales dado que es un campo absultamente nuevo para mi. A pesar de los desafíos encontrados, me siento satisfecho con el resultado obtenido y con las mejoras implementadas. Estoy seguro de que este desafío me ha ayudado a crecer como desarrollador y a adquirir nuevas habilidades que me serán útiles en futuros proyectos. Estaría enormemente agradecido por su feedback y comentarios sobre mi solución.
-
-Saludos cordiales, Facundo Joel Rodriguez
