@@ -32,8 +32,8 @@ Prueba técnica para [Sherpa.wtf](https://www.sherpa.wtf/) sobre un bot asistent
 
 ## Instalación
 ### Requisitos
-- Node.js v20.18.1 o superior
-- npm v10.8.2 o superior
+- Node.js v20.18.2
+- npm v10.8.2
 - API Key de OpenAI, TavilyAI y OpenWeatherMap
 - curl o Postman para realizar solicitudes HTTP
 
